@@ -22,3 +22,6 @@ The above is the agent's training score and shows that it was able to achieve an
 ### Improvements
 
 Further exploration of the hyperparameters could be performed to determine an optimal network architecture and see if the agent can learn more efficiently.  Additionally, other learning algorithms could be explored such as prioritized experience replay and dueling DQN networks.  Finally, it would be interesting to try learning directly from the pixels as opposed to the derived state space given.
+
+### References
+https://github.com/dxyang/DQN_pytorch
