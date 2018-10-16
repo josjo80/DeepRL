@@ -9,11 +9,11 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
-BUFFER_SIZE = int(1e5)  # replay buffer size
-BATCH_SIZE = 128        # minibatch size
+BUFFER_SIZE = int(1e6)  # replay buffer size
+BATCH_SIZE = 1024        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 1e-4         # learning rate of the actor 
+LR_ACTOR = 1e-3         # learning rate of the actor 
 LR_CRITIC = 1e-3        # learning rate of the critic
 WEIGHT_DECAY = 0     # L2 weight decay
 
@@ -49,19 +49,18 @@ class Agent():
         self.noise = OUNoise(action_size, random_seed)
 
         # Replay memory
-        self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
+        #self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
     
-    def step(self, state, action, reward, next_state, done, timestep):
+    def step(self, state, action, reward, next_state, done, timestep, memory):
         """Save experience in replay memory, and use random sample from buffer to learn."""
         # Save experience / reward
         for each in zip(state, action, reward, next_state, done):
-            self.memory.add(each[0],each[1],each[2],each[3],each[4])
-            
+            memory.add(each[0],each[1],each[2],each[3],each[4])
         # Learn, if enough samples are available in memory
-        if len(self.memory) > BATCH_SIZE:
-            if timestep % 20 == 0:
-                for _ in range(10):
-                    experiences = self.memory.sample()
+        if len(memory) > BATCH_SIZE:
+            if timestep % 2 == 0:
+                for _ in range(1):
+                    experiences = memory.sample()
                     self.learn(experiences, GAMMA)
 
     def act(self, state, add_noise=True):
@@ -103,6 +102,7 @@ class Agent():
         # Minimize the loss
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
+        torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1)
         self.critic_optimizer.step()
 
         # ---------------------------- update actor ---------------------------- #

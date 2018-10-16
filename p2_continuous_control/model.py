@@ -26,6 +26,7 @@ class Actor(nn.Module):
         self.seed = torch.manual_seed(seed)
         self.bna = nn.BatchNorm1d(num_features=state_size)
         self.fc1 = nn.Linear(state_size, fc1_units)
+        self.bna2= nn.BatchNorm1d(num_features=fc1_units)
         self.fc2 = nn.Linear(fc1_units, fc2_units)
         self.fc3 = nn.Linear(fc2_units, action_size)
         self.reset_parameters()
@@ -39,6 +40,7 @@ class Actor(nn.Module):
         """Build an actor (policy) network that maps states -> actions."""
         x = self.bna(state)
         x = F.relu(self.fc1(x))
+        x = self.bna2(x)
         x = F.relu(self.fc2(x))
         return F.tanh(self.fc3(x))
 
@@ -60,8 +62,9 @@ class Critic(nn.Module):
         self.seed = torch.manual_seed(seed)
         self.bnc = nn.BatchNorm1d(num_features=state_size)
         self.fcs1 = nn.Linear(state_size, fcs1_units)
+        self.bnc2 = nn.BatchNorm1d(num_features=fcs1_units)
         self.fc2 = nn.Linear(fcs1_units+action_size, fc2_units)
-        self.fc3 = nn.Linear(fc2_units, 4)
+        self.fc3 = nn.Linear(fc2_units, 1)
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -73,6 +76,7 @@ class Critic(nn.Module):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
         xs = self.bnc(state)
         xs = F.relu(self.fcs1(xs))
+        xs = self.bnc2(xs)
         x = torch.cat((xs, action), dim=1)
         x = F.relu(self.fc2(x))
         return self.fc3(x)
