@@ -16,6 +16,7 @@ I chose to use the MADDPG architecture because it can be used with multiple agen
 ### Training Results
 
 ![Training Score][image1]
+
 It took 703 episodes to reach the goal of 0.5 average max score.  It took several attemps to dial in the batch size and tau, as described above, to get the training stable and converge relatively fast.
 
 ### Improvements
