@@ -1,6 +1,6 @@
 [//]: # (Image References)
 
-[image1]: https://github.com/josjo80/DeepRL/blob/master/p3_collab_compet/5th_success.png "Training Score"
+[image1]: https://github.com/josjo80/DeepRL/blob/master/p3_collab_compet/6th_success.png "Training Score"
 
 # Project 3: Multi-Agent Collaboration/Competition in Tennis
 
@@ -11,13 +11,13 @@ For this project, I trained multiple agents to control their tennis racket to vo
 
 ### Agent Architecture
 
-I chose to use the MADDPG architecture because it can be used with multiple agents in both a collaborative and competitive scenario along with the fact that it can output a continuous action space.  The architecture is similar to DDPG but for each agent's critic network, it sees the entire states and actions of all agents. Within this architecture, I updated the main script to handle interacting with the environment, adding all the agents' experiences to a replay buffer and then after 2 timesteps I called self.update(...) 1 time.  I used a batch size of 512, an actor learning rate of 1e-3, a critic learning rate of 1e-3, a gamma of 0.99, and a tau of 1e-1.  I had trouble initially with getting the agents to learn with a batch size of 1024 and a tau of 1e-3.  While the success from one training run to the next varied greatly in the number of episodes, the batch size and tau made the biggest difference.  This seems to indicate that by increasing tau, this increased the update of target weights and improved convergence.  Lowering the batch size effectively gives less precise gradient steps but can also help with getting out of local minima.  This appears to have helped in this case.
+I chose to use the MADDPG architecture because it can be used with multiple agents in both a collaborative and competitive scenario along with the fact that it can output a continuous action space.  The architecture is similar to DDPG but for each agent's critic network, it sees the entire states and actions of all agents. Within this architecture, I updated the main script to handle interacting with the environment, adding all the agents' experiences to a replay buffer and then after 2 timesteps I called self.update(...) 1 time.  I used a batch size of 512, an actor learning rate of 1e-3, a critic learning rate of 1e-3, a gamma of 0.99, and a tau of 1e-2.  In a previous implementation, I used a tau of 1e-1 and achieved similar results.  I had trouble initially with getting the agents to learn with a batch size of 1024 and a tau of 1e-3.  While the success from one training run to the next varied greatly in the number of episodes, the batch size and tau made the biggest difference.  This seems to indicate that by increasing tau, this increased the update of target weights and improved convergence.  Lowering the batch size effectively gives less precise gradient steps but can also help with getting out of local minima.  This appears to have helped in this case.
 
 ### Training Results
 
 ![Training Score][image1]
 
-It took 703 episodes to reach the goal of 0.5 average max score.  It took several attemps to dial in the batch size and tau, as described above, to get the training stable and converge relatively fast.
+It took 782 episodes to reach the goal of 0.5 average max score.  In my previous implementation, for a tau of 1e-1 it took 703 episodes to reach the goal. It took several attemps to dial in the batch size and tau, as described above, to get the training stable and converge relatively fast.
 
 ### Improvements
 
